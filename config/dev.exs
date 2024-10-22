@@ -2,8 +2,8 @@ import Config
 
 # Configure your database
 config :live_art, LiveArt.Repo,
-  username: "postgres",
-  password: "postgres",
+  username: "root",
+  password: "password",
   hostname: "localhost",
   database: "live_art_dev",
   stacktrace: true,

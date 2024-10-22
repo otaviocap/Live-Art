@@ -17,7 +17,7 @@ defmodule LiveArtWeb.CoreComponents do
   use Phoenix.Component
 
   alias Phoenix.LiveView.JS
-  import LiveArtWeb.Gettext
+  use Gettext, backend: LiveArt.Gettext
 
   @doc """
   Renders a modal.
