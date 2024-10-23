@@ -7,11 +7,11 @@ defmodule LiveArtWeb.PageController do
     render(conn, :home, layout: false)
   end
 
-  def app(conn, _params) do
+  def test(conn, _params) do
     # The home page is often custom made,
     # so skip the default app layout.
 
     conn
-    |> render(:app)
+    |> render(:component_test)
   end
 end
