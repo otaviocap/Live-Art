@@ -43,7 +43,7 @@ defmodule LiveArtWeb do
         layouts: [html: LiveArtWeb.Layouts]
 
       import Plug.Conn
-      use Gettext, backend: MyApp.Gettext
+      use Gettext, backend: LiveArtWeb.Gettext
 
       unquote(verified_routes())
     end
@@ -84,8 +84,9 @@ defmodule LiveArtWeb do
       # HTML escaping functionality
       import Phoenix.HTML
       # Core UI components and translation
-      import LiveArtWeb.CoreComponents
-      use Gettext, backend: LiveArt.Gettext
+      use LiveArtWeb.GlobalComponents
+      use LiveArtWeb.GlobalCommands
+      use Gettext, backend: LiveArtWeb.Gettext
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS

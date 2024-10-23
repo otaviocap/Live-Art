@@ -18,6 +18,7 @@ defmodule LiveArtWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    get "/app", PageController, :app
   end
 
   # Other scopes may use custom stacks.

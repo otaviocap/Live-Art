@@ -58,7 +58,7 @@ config :live_art, LiveArtWeb.Endpoint,
     patterns: [
       ~r"priv/static/(?!uploads/).*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/live_art_web/(controllers|live|components)/.*(ex|heex)$"
+      ~r"lib/live_art_web/(controllers|live|components)/.*(ex|heex)$",
     ]
   ]
 
