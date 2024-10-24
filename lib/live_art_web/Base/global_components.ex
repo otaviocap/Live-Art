@@ -1,5 +1,6 @@
 defmodule LiveArtWeb.GlobalComponents do
   alias LiveArtWeb.Core
+  alias LiveArtWeb.Custom
 
   defmacro __using__(_) do
     quote do
@@ -16,6 +17,9 @@ defmodule LiveArtWeb.GlobalComponents do
       import Core.Modal
       import Core.SimpleForm
       import Core.Table
+
+      import Custom.CWavyContainer
+      import Custom.CRoomSelector
     end
   end
 end

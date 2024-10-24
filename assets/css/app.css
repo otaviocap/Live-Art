@@ -3,3 +3,27 @@
 @import "tailwindcss/utilities";
 
 /* This file is for your main application CSS */
+
+@import url('https://fonts.googleapis.com/css2?family=Sofia+Sans:ital,wght@0,1..1000;1,1..1000&display=swap');
+@import "components/include.css";
+@import "misc/include.css";
+@import "pages/include.css";
+
+:root {
+	--primary-color: #0099FF;
+	--primary-color-faded: #DBF1FF;
+
+	--border-radius: 25px;
+}
+
+* {
+	font-family: "Sofia Sans", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: normal;
+	font-style: normal;
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+}
