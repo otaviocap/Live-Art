@@ -10,6 +10,9 @@ defmodule LiveArt.Application do
     children = [
       LiveArtWeb.Telemetry,
       LiveArt.Repo,
+      {Ecto.Migrator,
+        repos: Application.fetch_env!(:live_art, :ecto_repos),
+        skip: skip_migrations?()},
       {DNSCluster, query: Application.get_env(:live_art, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: LiveArt.PubSub},
       # Start the Finch HTTP client for sending emails
@@ -32,5 +35,10 @@ defmodule LiveArt.Application do
   def config_change(changed, _new, removed) do
     LiveArtWeb.Endpoint.config_change(changed, removed)
     :ok
+  end
+
+  defp skip_migrations?() do
+    # By default, sqlite migrations are run when using a release
+    System.get_env("RELEASE_NAME") != nil
   end
 end
