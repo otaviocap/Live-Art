@@ -3,6 +3,8 @@ defmodule LiveArtWeb.Game.Index do
 
   alias LiveArt.Game
 
+  import LiveArtWeb.Game.Player
+
   @impl true
   def mount(_params, _session, socket) do
     {:ok, socket}

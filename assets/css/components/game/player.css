@@ -1,0 +1,30 @@
+.game-player__container {
+	width: 100%;
+	margin: 3px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-around;
+
+	> .info {
+		display: flex;
+		flex-direction: row;
+
+		gap: 10px;
+
+		.avatar {
+			width: 20%;
+			border-radius: 50%;
+		}
+	
+		.name {
+			font-weight: bold;
+			font-size: 1.5rem;
+		}
+	}
+
+
+	> .score {
+		font-size: 1.5rem;
+	}
+}

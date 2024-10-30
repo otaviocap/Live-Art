@@ -1,8 +1,25 @@
 <div class="page-game">
   <div class="game">
-    <div class="player-area">
-      <p><%= inspect(@room)%></p>
-    </div>
+    <.c_wavy_container class="s-size player-area">
+      <:small_text>
+        <p class="small_text">#<%= @room.room_id%></p>
+      </:small_text>
+      <div id="players">
+        <.player name="Otávio H" score={100} />
+        <.player name="Otávio H" score={100} />
+        <.player name="Otávio H" score={100} />
+        <.player name="Otávio H" score={100} />
+        <.player name="Otávio H" score={100} />
+        <.player name="Otávio H" score={100} />
+        <.player name="Otávio H" score={100} />
+        <.player name="Otávio H" score={100} />
+        <.player name="Otávio H" score={100} />
+        <.player name="Otávio H" score={100} />
+        <.player name="Otávio H" score={100} />
+      </div>
+    </.c_wavy_container>
+    <%!--<div class="player-area">
+    </div>--%>
     <div class="canvas-area">
       <p><%= inspect(@room)%></p>
     </div>
