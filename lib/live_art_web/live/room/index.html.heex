@@ -1,0 +1,25 @@
+<div class="page-home">
+  <.c_wavy_container>
+    <div phx-update="stream" id="rooms">
+      <.c_room_selector
+        :for={{id, room} <- @streams.rooms}
+        id={id}
+        room_id={room.room_id}
+        current_players={room.current_players}
+        max_players={room.max_players}
+        has_password={room.password != ""}
+        click={JS.navigate(~p"/game/#{room.room_id}")}
+      />
+    </div>
+  </.c_wavy_container>
+
+  <div class="bottom">
+    <.live_component
+      module={LiveArtWeb.Room.NewRoomComponent}
+      id={:new}
+      title={@page_title}
+      action={@live_action}
+      room={@room}
+    />
+  </div>
+</div>

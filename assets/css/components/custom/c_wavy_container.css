@@ -6,11 +6,9 @@
 	
 	height: 80vh;
 	width: 50%;
-	
-	
-	
+		
 	border-radius: var(--border-radius);
-	
+
 	.top {
 		font-size: 3rem;
 		align-items: center;
@@ -31,7 +29,7 @@
 			flex-direction: row;
 			align-items: center;
 			justify-content: space-between;
-
+			
 			padding: 15px 2px;
 			margin: 5px 15px;
 		}
@@ -82,6 +80,6 @@
 
 	> .content {
 		padding-top: 80px;
-		overflow: scroll;
+		overflow: auto;
 	}
 }

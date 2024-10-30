@@ -17,8 +17,8 @@ defmodule LiveArtWeb.Router do
   scope "/", LiveArtWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
-    get "/test", PageController, :test
+    live "/", Room.Index, :index
+    live "/game/:room_id", Game.Index, :index
   end
 
   # Other scopes may use custom stacks.

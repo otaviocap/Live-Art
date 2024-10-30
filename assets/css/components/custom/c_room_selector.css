@@ -5,6 +5,8 @@
 	font-size: var(--font-size);
 
 	color: var(--primary-color);
+
+	padding: 12px;
 	
 	> .content {
 		display: flex;

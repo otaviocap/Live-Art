@@ -35,6 +35,9 @@ live_art-*.tar
 npm-debug.log
 /assets/node_modules/
 
+#Other
+examples/
+
 
 # Database files
 *.db

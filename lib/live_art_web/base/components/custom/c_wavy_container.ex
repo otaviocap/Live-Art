@@ -12,7 +12,6 @@ defmodule LiveArtWeb.Custom.CWavyContainer do
     </.c_wavy_container>
   """
   slot :inner_block, required: true
-
   def c_wavy_container(assigns) do
     ~H"""
     <div class="c-wavy-container__container">
