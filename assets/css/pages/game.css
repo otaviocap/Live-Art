@@ -1,0 +1,54 @@
+.page-game {
+	width: 100%;
+	height: 90vh;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 5vh;
+
+	.game {
+		display: grid;
+		gap: 5px;
+
+		--canvas-height: 550px;
+
+		height: 100%;
+
+		grid-template:
+			"player canvas canvas" var(--canvas-height)
+			"player answer chat" minmax(100px, 20%);
+	
+		> .player-area {
+			grid-area: player;
+			background-color: aqua;
+			max-width: 300px;
+		}
+	
+		> .canvas-area {
+			grid-area: canvas;
+			background-color: red;
+
+			width: 900px;
+			height: var(--canvas-height);
+
+			margin: auto;
+		}
+	
+		> .answer-area {
+			grid-area: answer;
+			background-color: yellow;
+			width: 450px;
+		}
+	
+		> .chat-area {
+			grid-area: chat;
+			background-color: green;
+			width: 450px;
+		}
+	}
+
+
+
+}
+
