@@ -1,0 +1,36 @@
+.game-chat__container {
+	background-color: var(--primary-color-faded);
+
+	width: 100%;
+	height: 100%;
+
+	display: flex;
+	flex-direction: column;
+
+	border-radius: var(--chat-border-radius);
+
+	> .text {
+		padding: 5px 15px;
+		height: 90%;
+	}
+
+	> .input {
+		align-self: flex-end;
+		width: 100%;
+		height: 15%;
+		background-color: var(--primary-color-darker);
+		border-radius: var(--chat-border-radius);
+		
+		> input {
+			background-color: transparent;
+			border-radius: var(--chat-border-radius);
+			border: none;
+			width: 93%;
+			height: 25px;
+		}
+		> button {
+			background-color: transparent;
+			color: white;
+		}
+	}
+}

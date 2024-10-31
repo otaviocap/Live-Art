@@ -1,8 +1,16 @@
 <div class="page-game">
+  <.live_component
+    :if={@live_action in [:enter]}
+    module={LiveArtWeb.Game.RoomGuard}
+    id={:new}
+    title={@page_title}
+    action={@live_action}
+    room={@room}
+  />
   <div class="game">
     <.c_wavy_container class="s-size player-area">
       <:small_text>
-        <p class="small_text">#<%= @room.room_id%></p>
+        <p class="small_text">#<%= @room.room_id %></p>
       </:small_text>
       <div id="players">
         <.player name="Otávio H" score={100} />
@@ -21,13 +29,13 @@
     <%!--<div class="player-area">
     </div>--%>
     <div class="canvas-area">
-      <p><%= inspect(@room)%></p>
+      <.canvas />
     </div>
     <div class="answer-area">
-      <p><%= inspect(@room)%></p>
+      <.chat />
     </div>
     <div class="chat-area">
-      <p><%= inspect(@room)%></p>
+      <.chat />
     </div>
   </div>
 </div>

@@ -12,6 +12,7 @@
 :root {
 	--primary-color: #0099FF;
 	--primary-color-faded: #DBF1FF;
+	--primary-color-darker: #83CBFF;
 
 	--border-radius: 25px;
 }

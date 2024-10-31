@@ -70,17 +70,13 @@ defmodule LiveArt.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "ecto.setup", "assets.setup", "assets.build"],
+      setup: ["deps.get", "ecto.setup", "cmd --cd assets npm install"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
       "assets.build": ["tailwind live_art", "esbuild live_art"],
-      "assets.deploy": [
-        "tailwind live_art --minify",
-        "esbuild live_art --minify",
-        "phx.digest"
-      ]
+      "assets.deploy": ["cmd --cd assets node build.js --deploy", "phx.digest"]
     ]
   end
 end

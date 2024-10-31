@@ -1,8 +1,6 @@
 defmodule LiveArtWeb.Game.Player do
   use LiveArtWeb.BaseComponent
 
-  import Core.Icon
-
   @doc false
   attr :name, :string, required: true
   attr :score, :integer, required: true

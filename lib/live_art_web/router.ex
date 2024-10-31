@@ -19,6 +19,7 @@ defmodule LiveArtWeb.Router do
 
     live "/", Room.Index, :index
     live "/game/:room_id", Game.Index, :index
+    live "/game/:room_id/enter", Game.Index, :enter
   end
 
   # Other scopes may use custom stacks.

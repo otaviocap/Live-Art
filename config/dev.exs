@@ -22,7 +22,7 @@ config :live_art, LiveArtWeb.Endpoint,
   debug_errors: true,
   secret_key_base: "/H3fSR/yXtVzylBqkVg176MgPSa15yo4ws1iAYduarMjcddMGlarEp8Ofj+lE/ej",
   watchers: [
-    esbuild: {Esbuild, :install_and_run, [:live_art, ~w(--sourcemap=inline --watch)]},
+    node: ["build.js", "--watch", cd: Path.expand("../assets", __DIR__)],
     tailwind: {Tailwind, :install_and_run, [:live_art, ~w(--watch)]}
   ]
 
