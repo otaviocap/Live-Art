@@ -30,10 +30,7 @@ defmodule LiveArtWeb.Room.Index do
   end
 
   @impl true
-  def handle_event("delete", %{"id" => id}, socket) do
-    room = Game.get_room!(id)
-    {:ok, _} = Game.delete_room(room)
-
+  def handle_info({:room_deleted, room}, socket) do
     {:noreply, stream_delete(socket, :rooms, room)}
   end
 end

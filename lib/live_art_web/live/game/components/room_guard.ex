@@ -51,7 +51,7 @@ defmodule LiveArtWeb.Game.RoomGuard do
   def handle_event("save", %{"name" => name, "password" => password}, socket) do
     case socket.assigns.room.password == password do
       true ->
-        IO.inspect("ok")
+        notify_parent({:login_successful, name})
 
         {:noreply,
          socket

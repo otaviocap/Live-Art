@@ -10,15 +10,19 @@ defmodule LiveArt.Application do
     children = [
       LiveArtWeb.Telemetry,
       LiveArt.Repo,
+      LiveArt.Room.RoomRegistry.child_spec(),
+      LiveArt.Room.RoomDynamicSupervisor,
+      LiveArt.Room.RoomStateHydrator,
       {Ecto.Migrator,
-        repos: Application.fetch_env!(:live_art, :ecto_repos),
-        skip: skip_migrations?()},
+      repos: Application.fetch_env!(:live_art, :ecto_repos),
+      skip: skip_migrations?()},
       {DNSCluster, query: Application.get_env(:live_art, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: LiveArt.PubSub},
       # Start the Finch HTTP client for sending emails
       {Finch, name: LiveArt.Finch},
       # Start a worker by calling: LiveArt.Worker.start_link(arg)
       # {LiveArt.Worker, arg},
+      LiveArt.Room.RoomReactiveHandler,
       # Start to serve requests, typically the last entry
       LiveArtWeb.Endpoint
     ]
