@@ -24,8 +24,6 @@ defmodule LiveArtWeb.Room.Index do
 
   @impl true
   def handle_info({:room_created, room}, socket) do
-    IO.inspect(room)
-
     {:noreply, stream_insert(socket, :rooms, room)}
   end
 

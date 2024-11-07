@@ -13,17 +13,13 @@
         <p class="small_text">#<%= @room.room_id %></p>
       </:small_text>
       <div id="players">
-        <.player name="Otávio H" score={100} />
-        <.player name="Otávio H" score={100} />
-        <.player name="Otávio H" score={100} />
-        <.player name="Otávio H" score={100} />
-        <.player name="Otávio H" score={100} />
-        <.player name="Otávio H" score={100} />
-        <.player name="Otávio H" score={100} />
-        <.player name="Otávio H" score={100} />
-        <.player name="Otávio H" score={100} />
-        <.player name="Otávio H" score={100} />
-        <.player name="Otávio H" score={100} />
+        <.player
+          :for={player <- @room_state.players}
+
+          id={player.name}
+          name={player.name}
+          score={player.score}
+        />
       </div>
     </.c_wavy_container>
     <%!--<div class="player-area">

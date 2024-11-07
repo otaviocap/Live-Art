@@ -13,6 +13,7 @@ defmodule LiveArt.Application do
       LiveArt.Room.RoomRegistry.child_spec(),
       LiveArt.Room.RoomDynamicSupervisor,
       LiveArt.Room.RoomStateHydrator,
+      LiveArt.Room.RoomPlayerMonitor,
       {Ecto.Migrator,
       repos: Application.fetch_env!(:live_art, :ecto_repos),
       skip: skip_migrations?()},

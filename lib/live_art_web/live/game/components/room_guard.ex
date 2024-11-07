@@ -1,8 +1,6 @@
 defmodule LiveArtWeb.Game.RoomGuard do
   use LiveArtWeb, :live_component
 
-  alias LiveArt.Game
-
   @impl true
   def render(assigns) do
     ~H"""
@@ -44,7 +42,6 @@ defmodule LiveArtWeb.Game.RoomGuard do
 
   @impl true
   def handle_event("validate", _params, socket) do
-    IO.inspect(socket)
     {:noreply, assign(socket, form: socket.assigns.form)}
   end
 
@@ -60,8 +57,6 @@ defmodule LiveArtWeb.Game.RoomGuard do
          |> push_patch(to: ~p"/game/#{socket.assigns.room.room_id}", replace: true)}
 
       false ->
-        IO.inspect("not #{password} vs #{socket.assigns.room.password}")
-
         {:noreply,
          socket
          |> put_flash(:error, "Incorrect password")}

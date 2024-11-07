@@ -65,6 +65,7 @@
 				align-items: flex-end;
 				justify-content: center;
 				flex-direction: column;
+				gap: 5px
 			}
 		}
 	

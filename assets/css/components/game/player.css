@@ -10,6 +10,8 @@
 		display: flex;
 		flex-direction: row;
 
+		width: 85%;
+
 		gap: 10px;
 
 		.avatar {
@@ -25,6 +27,7 @@
 
 
 	> .score {
+		width: 10%;
 		font-size: 1.5rem;
 	}
 }
