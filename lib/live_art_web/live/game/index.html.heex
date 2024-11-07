@@ -15,23 +15,20 @@
       <div id="players">
         <.player
           :for={player <- @room_state.players}
-
           id={player.name}
           name={player.name}
           score={player.score}
         />
       </div>
     </.c_wavy_container>
-    <%!--<div class="player-area">
-    </div>--%>
     <div class="canvas-area">
       <.canvas />
     </div>
     <div class="answer-area">
-      <.chat />
+      <.live_component module={LiveArtWeb.Game.Chat} id={:answer} />
     </div>
     <div class="chat-area">
-      <.chat />
+      <.live_component module={LiveArtWeb.Game.Chat} id={:chat} />
     </div>
   </div>
 </div>

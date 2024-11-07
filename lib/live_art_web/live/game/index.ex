@@ -7,7 +7,6 @@ defmodule LiveArtWeb.Game.Index do
 
   import LiveArtWeb.Game.Player
   import LiveArtWeb.Game.Canvas
-  import LiveArtWeb.Game.Chat
 
   @impl true
   def mount(_params, _session, socket) do
@@ -48,6 +47,24 @@ defmodule LiveArtWeb.Game.Index do
       |> assign(:user, name)
       |> push_patch(to: ~p"/game/#{socket.assigns.room.room_id}")
       |> put_flash(:info, "Login successful")
+
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_info({LiveArtWeb.Game.Chat, {:send_message, :answer, value}}, socket) do
+    socket =
+      socket
+      |> put_flash(:info, "From answer: #{value}")
+
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_info({LiveArtWeb.Game.Chat, {:send_message, :chat, value}}, socket) do
+    socket =
+      socket
+      |> put_flash(:info, "From chat: #{value}")
 
     {:noreply, socket}
   end

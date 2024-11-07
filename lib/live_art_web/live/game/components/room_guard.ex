@@ -53,7 +53,6 @@ defmodule LiveArtWeb.Game.RoomGuard do
         {:noreply,
          socket
          |> assign(:user, name)
-         |> put_flash(:info, "Authenticated successfully")
          |> push_patch(to: ~p"/game/#{socket.assigns.room.room_id}", replace: true)}
 
       false ->

@@ -50,6 +50,9 @@ defmodule LiveArtWeb.Core.Input do
   attr :options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
   attr :multiple, :boolean, default: false, doc: "the multiple flag for select inputs"
 
+  attr :clear_input, :boolean, default: false, doc: "gives an simple input"
+  attr :class, :string, default: nil
+
   attr :rest, :global,
     include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
                 multiple pattern placeholder readonly required rows size step)
@@ -129,11 +132,27 @@ defmodule LiveArtWeb.Core.Input do
     """
   end
 
+  def input(%{clear_input: true} = assigns) do
+    ~H"""
+      <input
+        type={@type}
+        name={@name}
+        id={@id}
+        value={Phoenix.HTML.Form.normalize_value(@type, @value)}
+        class={[
+          @class
+        ]}
+        phx-debounce="300"
+        {@rest}
+      />
+    """
+  end
+
   # All other inputs text, datetime-local, url, password, etc. are handled here...
   def input(assigns) do
     ~H"""
     <div>
-      <.label for={@id}><%= @label %></.label>
+      <.label for={@id} ><%= @label %></.label>
       <input
         type={@type}
         name={@name}
@@ -142,8 +161,10 @@ defmodule LiveArtWeb.Core.Input do
         class={[
           "mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6",
           @errors == [] && "border-zinc-300 focus:border-zinc-400",
-          @errors != [] && "border-rose-400 focus:border-rose-400"
+          @errors != [] && "border-rose-400 focus:border-rose-400",
+          @class
         ]}
+        phx-debounce="300"
         {@rest}
       />
       <.error :for={msg <- @errors}><%= msg %></.error>
