@@ -6,7 +6,7 @@ defmodule LiveArtWeb.Game.Chat do
     ~H"""
     <div class="game-chat__container">
       <div class="text">
-        <p>abc</p>
+        <p :for={ message <- @stream}><%= "#{message.from}: #{message.content}"%></p>
       </div>
       <form class="input" phx-submit="submit" phx-target={@myself} id={@id} phx-change="change">
         <input type="text" name="value" value={@value} phx-debounce="300" />
@@ -31,6 +31,7 @@ defmodule LiveArtWeb.Game.Chat do
 
   @impl true
   def handle_event("submit", %{"value" => value}, socket) do
+    IO.inspect({:send_message, socket.assigns.id, value})
     notify_parent({:send_message, socket.assigns.id, value})
 
     {:noreply, assign(socket, :value, "")}

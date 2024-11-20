@@ -19,7 +19,7 @@ defmodule LiveArt.MixProject do
   def application do
     [
       mod: {LiveArt.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :observer, :wx]
     ]
   end
 

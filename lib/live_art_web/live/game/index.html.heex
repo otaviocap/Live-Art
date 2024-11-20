@@ -25,10 +25,20 @@
       <.canvas />
     </div>
     <div class="answer-area">
-      <.live_component module={LiveArtWeb.Game.Chat} id={:answer} />
+      <.live_component
+        module={LiveArtWeb.Game.Chat}
+        id={:answer}
+        room_id={@room.room_id}
+        stream={@answer_stream}
+      />
     </div>
     <div class="chat-area">
-      <.live_component module={LiveArtWeb.Game.Chat} id={:chat} />
+      <.live_component
+        module={LiveArtWeb.Game.Chat}
+        id={:chat}
+        room_id={@room.room_id}
+        stream={@chat_stream}
+      />
     </div>
   </div>
 </div>

@@ -12,6 +12,9 @@
 	> .text {
 		padding: 5px 15px;
 		height: 90%;
+		overflow: auto;
+		display: flex;
+		flex-direction: column-reverse;
 	}
 
 	> .input {
