@@ -4,6 +4,7 @@ defmodule LiveArt.Game do
   """
 
   import Ecto.Query, warn: false
+  require Logger
   alias LiveArt.Repo
 
   alias LiveArt.Game.Room
@@ -24,6 +25,32 @@ defmodule LiveArt.Game do
   def delete_room(%Room{} = room) do
     Repo.delete(room)
     |> broadcast(:room_deleted)
+  end
+
+  def add_player(room_id) do
+    Repo.transaction(fn ->
+      room = Room
+        |> where(room_id: ^room_id)
+        |> Repo.one()
+
+      changeset = Ecto.Changeset.change(room, current_players: room.current_players + 1)
+
+      Repo.update(changeset)
+      |> broadcast(:room_updated)
+    end)
+  end
+
+  def remove_player(room_id) do
+    Repo.transaction(fn ->
+      room = Room
+        |> where(room_id: ^room_id)
+        |> Repo.one()
+
+      changeset = Ecto.Changeset.change(room, current_players: room.current_players - 1)
+
+      Repo.update(changeset)
+      |> broadcast(:room_updated)
+    end)
   end
 
   def change_room(%Room{} = room, attrs \\ %{}) do

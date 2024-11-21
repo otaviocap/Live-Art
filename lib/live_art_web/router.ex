@@ -20,6 +20,8 @@ defmodule LiveArtWeb.Router do
     live "/", Room.Index, :index
     live "/game/:room_id", Game.Index, :index
     live "/game/:room_id/enter", Game.Index, :enter
+
+    get "/*path", Controllers.RedirectController, :home
   end
 
   # Other scopes may use custom stacks.

@@ -28,6 +28,11 @@ defmodule LiveArtWeb.Room.Index do
   end
 
   @impl true
+  def handle_info({:room_updated, room}, socket) do
+    {:noreply, stream_insert(socket, :rooms, room)}
+  end
+
+  @impl true
   def handle_info({:room_deleted, room}, socket) do
     {:noreply, stream_delete(socket, :rooms, room)}
   end

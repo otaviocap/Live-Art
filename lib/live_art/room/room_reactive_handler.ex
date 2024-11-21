@@ -33,4 +33,9 @@ defmodule LiveArt.Room.RoomReactiveHandler do
 
     {:noreply, state}
   end
+
+  @impl true
+  def handle_info({:room_updated, _room}, state) do
+    {:noreply, state}
+  end
 end

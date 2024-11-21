@@ -41,6 +41,9 @@ defmodule LiveArt.Room.RoomProcess do
   @impl true
   def handle_call({:add_player, player_name}, _from, %RunningRoom{} = state) do
     state = RunningRoom.add_player(state, player_name)
+
+    LiveArt.Game.add_player(state.room.room_id)
+
     broadcast(state.room.room_id, :state_updated, state)
 
     Logger.info("Adding player #{player_name} to #{state.room.room_id}")
@@ -51,6 +54,9 @@ defmodule LiveArt.Room.RoomProcess do
   @impl true
   def handle_call({:remove_player, player_name}, _from, %RunningRoom{} = state) do
     state = RunningRoom.remove_player(state, player_name)
+
+    LiveArt.Game.remove_player(state.room.room_id)
+
     broadcast(state.room.room_id, :state_updated, state)
 
     Logger.info("Removing player #{player_name} to #{state.room.room_id}")
