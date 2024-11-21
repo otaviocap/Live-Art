@@ -16,6 +16,20 @@ defmodule LiveArt.Room.RunningRoom do
     %{state | players: [ %RoomPlayer { name: player_name } | state.players ]}
   end
 
+  def add_drawing_stroke(state = %RunningRoom{}, drawing_stroke) do
+    %{state | current_drawing: [ drawing_stroke | state.current_drawing ]}
+  end
+
+  def undo_drawing_stroke(state = %RunningRoom{}) do
+    [_hd | current_drawing] = state.current_drawing
+
+    %{state | current_drawing: current_drawing}
+  end
+
+  def clear_drawing(state = %RunningRoom{}) do
+    %{state | current_drawing: []}
+  end
+
   def remove_player(state = %RunningRoom{}, player_name) do
     players =
       state.players

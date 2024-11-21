@@ -63,6 +63,54 @@ defmodule LiveArtWeb.Game.Index do
   end
 
   @impl true
+  def handle_info({:clear_drawing, state}, socket) do
+    socket = assign(socket, :room_state, state)
+
+    {:noreply, push_event(socket, "clear_canvas", %{})}
+  end
+
+  @impl true
+  def handle_info({:undo_stroke, state}, socket) do
+    socket = assign(socket, :room_state, state)
+
+    {:noreply, push_event(socket, "undo", %{})}
+  end
+
+  @impl true
+  def handle_info({:add_drawing_stroke, state}, socket) do
+    socket = assign(socket, :room_state, state)
+
+    {:noreply, push_event(socket, "add_stroke", hd(state.current_drawing))}
+  end
+
+  @impl true
+  def handle_event("set-color", %{"color" => color}, socket) do
+    {:noreply, push_event(socket, "change_color", %{color: color})}
+  end
+
+  @impl true
+  def handle_event("clear-canvas", _values, socket) do
+    RoomProcess.clear_drawing(socket.assigns.room_pid)
+
+    {:noreply, push_event(socket, "clear_canvas", %{})}
+  end
+
+  @impl true
+  def handle_event("undo", _values, socket) do
+    RoomProcess.undo_stroke(socket.assigns.room_pid)
+
+    {:noreply, push_event(socket, "undo", %{})}
+  end
+
+  @impl true
+  def handle_event("canvas-update", stroke, socket) do
+    RoomProcess.add_drawing_stroke(socket.assigns.room_pid, stroke)
+
+    {:noreply, socket}
+  end
+
+
+  @impl true
   def handle_info({:new_chat, category, message}, socket) do
     send_update(LiveArtWeb.Game.Chat, id: :chat)
 
@@ -115,6 +163,7 @@ defmodule LiveArtWeb.Game.Index do
         |> assign(:answer_stream, [])
         |> assign(:subscribed, true)
         |> assign(:room_state, RoomProcess.get_state(room_pid))
+        |> push_event("enable_drawing", %{word: "praia"})
 
       {:error, _error} ->
         socket
