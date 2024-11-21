@@ -27,8 +27,7 @@ defmodule LiveArtWeb.Game.Index do
          )
          |> assign(:page_title, "Game")
          |> assign(:room, room)
-         |> subscribe_to_events()
-        }
+         |> subscribe_to_events()}
 
       nil ->
         {:noreply,
@@ -88,7 +87,24 @@ defmodule LiveArtWeb.Game.Index do
   def handle_info({:state_updated, state}, socket) do
     socket = assign(socket, :room_state, state)
 
-    {:noreply, socket}
+    IO.inspect(state)
+
+    if state.current_player_drawing != "" &&
+         Map.has_key?(socket.assigns, :user) &&
+         state.current_player_drawing == socket.assigns.user
+    do
+      IO.inspect("Enabling drawing for #{socket.assigns.user}")
+
+      {:noreply,
+       socket
+       |> assign(:am_i_the_artist, true)
+       |> push_event("enable_drawing", %{})}
+    else
+      {:noreply,
+       socket
+       |> assign(:am_i_the_artist, false)
+       |> push_event("disable_drawing", %{})}
+    end
   end
 
   @impl true
@@ -138,7 +154,6 @@ defmodule LiveArtWeb.Game.Index do
     {:noreply, socket}
   end
 
-
   defp should_guard(socket, id, true) do
     push_patch(socket, to: ~p"/game/#{id}/enter")
   end
@@ -156,7 +171,6 @@ defmodule LiveArtWeb.Game.Index do
         |> assign(:answer_stream, [])
         |> assign(:room_state, RoomProcess.get_state(room_pid))
         |> assign(:am_i_the_artist, false)
-        #|> push_event("enable_drawing", %{})
 
       {:error, _error} ->
         socket
@@ -165,8 +179,7 @@ defmodule LiveArtWeb.Game.Index do
   end
 
   defp subscribe_to_events(socket) do
-    if (!Map.has_key?(socket.assigns, :subscribed)) do
-
+    if !Map.has_key?(socket.assigns, :subscribed) do
       room_id = socket.assigns.room.room_id
 
       RoomProcess.subscribe(room_id)

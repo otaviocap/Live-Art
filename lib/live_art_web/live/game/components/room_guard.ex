@@ -67,7 +67,9 @@ defmodule LiveArtWeb.Game.RoomGuard do
   end
 
   defp validate_name(socket, name) do
-    name != "" && RoomProcess.validate_name(socket.assigns.room_pid, name)
+    name != ""
+    #&& name != "SYSTEM"
+    && RoomProcess.validate_name(socket.assigns.room_pid, name)
   end
 
   defp validate_password(socket, password) do

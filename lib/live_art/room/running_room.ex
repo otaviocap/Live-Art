@@ -27,7 +27,6 @@ defmodule LiveArt.Room.RunningRoom do
       [_hd | current_drawing] = state.current_drawing
       %{state | current_drawing: current_drawing}
     end
-
   end
 
   def clear_drawing(state = %RunningRoom{}) do
@@ -38,6 +37,31 @@ defmodule LiveArt.Room.RunningRoom do
     players =
       state.players
       |> Enum.reject(fn e -> e.name == player_name end)
+
+    %{state | players: players}
+  end
+
+  def start_game(state = %RunningRoom{}, selected_word) do
+    state = %{ state | current_player_drawing: hd(Enum.take_random(state.players, 1)).name}
+    state = %{ state | current_word: selected_word}
+
+    state
+  end
+
+  def end_round(state = %RunningRoom{}) do
+    state = %{ state | current_player_drawing: ""}
+    state = %{ state | current_word: ""}
+    state = %{ state | current_drawing: []}
+
+    state
+  end
+
+  def has_winner(state = %RunningRoom{}) do
+    Enum.count(state.players, fn e -> e.score > 110 end) > 0
+  end
+
+  def end_game(state = %RunningRoom{}) do
+    players = Enum.map(state.players, fn player -> %{ player | score: 0 } end)
 
     %{state | players: players}
   end

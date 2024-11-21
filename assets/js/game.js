@@ -20,7 +20,7 @@ function enableColorPicker() {
 				hue: true
 			}
 		});
-	
+
 		currentPicker
 			.on("hide", instance => {
 				instance.applyColor()
@@ -77,7 +77,7 @@ function handlePointerMove(e) {
 }
 
 function handlePointerUp(e) {
-	const event = new CustomEvent(CustomEvents.CanvasUpdate, {detail: {color: currentColor, data: [...currentPathData]}});
+	const event = new CustomEvent(CustomEvents.CanvasUpdate, { detail: { color: currentColor, data: [...currentPathData] } });
 	window.dispatchEvent(event);
 
 	currentPath = null;
@@ -103,7 +103,15 @@ window.addEventListener("phx:enable_drawing", (e) => {
 });
 
 window.addEventListener("phx:disable_drawing", (e) => {
-	console.log("Drawing disabled", e)
+	canvas = getCanvas()
+
+	canvas.onpointerdown = null
+	canvas.onpointerup = null
+	canvas.onpointermove = null
+
+	currentPath = null;
+	currentPicker = null
+	currentPathData = []
 });
 
 window.addEventListener("phx:change_color", (e) => {

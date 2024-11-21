@@ -44,6 +44,8 @@ defmodule LiveArt.Room.RoomProcess do
       room: base_state
     }
 
+    Process.send_after(self(), :check_start_game, 2000)
+
     {:ok, state}
   end
 
@@ -111,6 +113,77 @@ defmodule LiveArt.Room.RoomProcess do
     broadcast(state.room.room_id, :clear_drawing, state)
 
     {:reply, state, state}
+  end
+
+
+  @impl true
+  def handle_info(:check_start_game, %RunningRoom{} = state) do
+    Logger.info("Game isnt started, waiting for 2 players")
+
+    if (length(state.players) >= 2) do
+      Process.send(self(), :pause_game, [])
+    else
+      Process.send_after(self(), :check_start_game, 2000)
+    end
+
+    {:noreply, state}
+  end
+
+  @impl true
+  def handle_info(:pause_game, %RunningRoom{} = state) do
+
+    Logger.info("Game is paused, waiting for 2 players")
+
+    if (length(state.players) >= 2) do
+      Process.send_after(self(), :start_game, 5000)
+    else
+      Process.send_after(self(), :pause_game, 2000)
+    end
+
+    {:noreply, state}
+  end
+
+  @impl true
+  def handle_info(:start_game, %RunningRoom{} = state) do
+    state = RunningRoom.start_game(state, LiveArt.Words.get_random_word())
+
+    broadcast(state.room.room_id, :state_updated, state)
+
+    Logger.info("Starting game, artist: #{inspect state.current_player_drawing} word #{state.current_word}. Id: #{state.room.room_id}")
+
+    Process.send_after(self(), :end_round, 30000)
+
+    {:noreply, state}
+  end
+
+  @impl true
+  def handle_info(:end_round, %RunningRoom{} = state) do
+    state = RunningRoom.end_round(state)
+
+    broadcast(state.room.room_id, :state_updated, state)
+
+    Logger.info("Endend round. Id: #{state.room.room_id}")
+
+    if (RunningRoom.has_winner(state)) do
+      Process.send_after(self(), :end_game, 5000)
+    else
+      Process.send_after(self(), :start_game, 5000)
+    end
+
+    {:noreply, state}
+  end
+
+  @impl true
+  def handle_info(:end_game, %RunningRoom{} = state) do
+    state = RunningRoom.end_game(state)
+
+    broadcast(state.room.room_id, :state_updated, state)
+
+    Logger.info("Endend game. Id: #{state.room.room_id}")
+
+    Process.send_after(self(), :check_start_game, 5000)
+
+    {:noreply, state}
   end
 
   def subscribe(room_id) do
