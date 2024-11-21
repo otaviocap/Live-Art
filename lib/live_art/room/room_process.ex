@@ -34,6 +34,10 @@ defmodule LiveArt.Room.RoomProcess do
     GenServer.call(room_pid, :clear_drawing)
   end
 
+  def validate_name(room_pid, name) when is_pid(room_pid) do
+    GenServer.call(room_pid, {:validate_name, name})
+  end
+
   @impl true
   def init(%Room{} = base_state) do
     state = %RunningRoom{
@@ -46,6 +50,14 @@ defmodule LiveArt.Room.RoomProcess do
   @impl true
   def handle_call(:read, _from, %RunningRoom{} = state) do
     {:reply, state, state}
+  end
+
+  @impl true
+  def handle_call({:validate_name, player_name}, _from, %RunningRoom{} = state) do
+
+    has_player = Enum.count(state.players, fn e -> e.name == player_name end) > 0
+
+    {:reply, !has_player, state}
   end
 
   @impl true

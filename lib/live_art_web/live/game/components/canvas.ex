@@ -10,9 +10,9 @@ defmodule LiveArtWeb.Game.Canvas do
   def canvas(assigns) do
     ~H"""
     <div class="game-canvas__container">
-      <div class="word">praia</div>
+      <div class={["word", !@am_i_the_artist && "hidden" ]}>praia</div>
       <div class="main">
-        <div class="tools">
+        <div class={["tools", !@am_i_the_artist && "hidden" ]}>
           <.color color="#000000"/>
           <.color color="#FF0000"/>
           <.color color="#FF8800"/>

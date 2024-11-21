@@ -1,4 +1,6 @@
 defmodule LiveArtWeb.Game.RoomGuard do
+  alias LiveArt.Room.RoomProcess
+
   use LiveArtWeb, :live_component
 
   @impl true
@@ -25,6 +27,7 @@ defmodule LiveArtWeb.Game.RoomGuard do
           />
           <button class="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg">Play</button>
         </.form>
+        <p class="error"><%= @error %></p>
       </.c_wavy_container>
     </div>
     """
@@ -37,6 +40,7 @@ defmodule LiveArtWeb.Game.RoomGuard do
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:error, "")
      |> assign_new(:form, fn -> to_form(form_fields) end)}
   end
 
@@ -46,7 +50,7 @@ defmodule LiveArtWeb.Game.RoomGuard do
   end
 
   def handle_event("save", %{"name" => name, "password" => password}, socket) do
-    case socket.assigns.room.password == password do
+    case validate_name(socket, name) and validate_password(socket, password) do
       true ->
         notify_parent({:login_successful, name})
 
@@ -58,8 +62,17 @@ defmodule LiveArtWeb.Game.RoomGuard do
       false ->
         {:noreply,
          socket
-         |> put_flash(:error, "Incorrect password")}
+         |> assign(:error, "Incorrect password or name already in use")}
     end
+  end
+
+  defp validate_name(socket, name) do
+    name != "" && RoomProcess.validate_name(socket.assigns.room_pid, name)
+  end
+
+  defp validate_password(socket, password) do
+    socket.assigns.room.password == password
+    or socket.assigns.room.password == ""
   end
 
   defp notify_parent(msg), do: send(self(), {__MODULE__, msg})

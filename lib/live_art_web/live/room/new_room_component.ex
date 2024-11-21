@@ -48,7 +48,6 @@ defmodule LiveArtWeb.Room.NewRoomComponent do
 
         {:noreply,
          socket
-         |> put_flash(:info, "Room created successfully")
          |> push_navigate(to: ~p"/game/#{room.room_id}")
         }
 

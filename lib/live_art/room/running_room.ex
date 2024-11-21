@@ -21,9 +21,13 @@ defmodule LiveArt.Room.RunningRoom do
   end
 
   def undo_drawing_stroke(state = %RunningRoom{}) do
-    [_hd | current_drawing] = state.current_drawing
+    if (state.current_drawing == []) do
+      %{state | current_drawing: []}
+    else
+      [_hd | current_drawing] = state.current_drawing
+      %{state | current_drawing: current_drawing}
+    end
 
-    %{state | current_drawing: current_drawing}
   end
 
   def clear_drawing(state = %RunningRoom{}) do

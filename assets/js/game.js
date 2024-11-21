@@ -92,7 +92,6 @@ function handlePointerUp(e) {
 
 // Phoenix LiveView event handlers
 window.addEventListener("phx:enable_drawing", (e) => {
-	console.log(e);
 
 	canvas = getCanvas()
 
@@ -101,8 +100,6 @@ window.addEventListener("phx:enable_drawing", (e) => {
 	canvas.onpointermove = handlePointerMove
 
 	enableColorPicker()
-
-	console.log("Drawing enabled",)
 });
 
 window.addEventListener("phx:disable_drawing", (e) => {

@@ -6,6 +6,7 @@
     title={@page_title}
     action={@live_action}
     room={@room}
+    room_pid={@room_pid}
   />
   <div class="game">
     <.c_wavy_container class="s-size player-area">
@@ -22,7 +23,7 @@
       </div>
     </.c_wavy_container>
     <div class="canvas-area">
-      <.canvas />
+      <.canvas am_i_the_artist={@am_i_the_artist}/>
     </div>
     <div class="answer-area">
       <.live_component
