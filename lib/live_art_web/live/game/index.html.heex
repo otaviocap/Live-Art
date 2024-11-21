@@ -31,6 +31,7 @@
         id={:answer}
         room_id={@room.room_id}
         stream={@answer_stream}
+        disabled={@block_answers}
       />
     </div>
     <div class="chat-area">
@@ -39,6 +40,7 @@
         id={:chat}
         room_id={@room.room_id}
         stream={@chat_stream}
+        disabled={false}
       />
     </div>
   </div>

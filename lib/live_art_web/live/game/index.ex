@@ -65,11 +65,29 @@ defmodule LiveArtWeb.Game.Index do
 
   @impl true
   def handle_info({LiveArtWeb.Game.Chat, {:send_message, :answer, value}}, socket) do
-    socket =
-      socket
-      |> put_flash(:info, "From answer: #{value}")
+    is_correct = String.upcase(value) == String.upcase(socket.assigns.room_state.current_word)
 
-    {:noreply, socket}
+    if (is_correct) do
+      RoomProcess.add_score(socket.assigns.room_pid, socket.assigns.user, 10)
+
+      RoomChat.send_chat(
+        socket.assigns.room.room_id,
+        :answer,
+        %{from: "SYSTEM", content: "#{socket.assigns.user} acertou a palavra"}
+      )
+
+      {:noreply, assign(socket, :block_answers, true)}
+    else
+      RoomChat.send_chat(
+        socket.assigns.room.room_id,
+        :answer,
+        %{from: socket.assigns.user, content: value}
+        )
+
+      IO.inspect("Should be unblocking")
+        {:noreply, socket}
+    end
+
   end
 
   @impl true
@@ -85,26 +103,39 @@ defmodule LiveArtWeb.Game.Index do
 
   @impl true
   def handle_info({:state_updated, state}, socket) do
-    socket = assign(socket, :room_state, state)
+    {:noreply, assign(socket, :room_state, state)}
+  end
 
-    IO.inspect(state)
-
+  @impl true
+  def handle_info({:round_started, state}, socket) do
     if state.current_player_drawing != "" &&
          Map.has_key?(socket.assigns, :user) &&
          state.current_player_drawing == socket.assigns.user
     do
-      IO.inspect("Enabling drawing for #{socket.assigns.user}")
-
       {:noreply,
        socket
        |> assign(:am_i_the_artist, true)
+       |> assign(:block_answers, true)
+       |> assign(:room_state, state)
        |> push_event("enable_drawing", %{})}
     else
       {:noreply,
        socket
        |> assign(:am_i_the_artist, false)
+       |> assign(:block_answers, false)
+       |> assign(:room_state, state)
        |> push_event("disable_drawing", %{})}
     end
+  end
+
+  @impl true
+  def handle_info({:round_ended, state}, socket) do
+      {:noreply,
+       socket
+       |> assign(:am_i_the_artist, false)
+       |> assign(:block_answers, true)
+       |> assign(:room_state, state)
+       |> push_event("disable_drawing", %{})}
   end
 
   @impl true
@@ -171,6 +202,7 @@ defmodule LiveArtWeb.Game.Index do
         |> assign(:answer_stream, [])
         |> assign(:room_state, RoomProcess.get_state(room_pid))
         |> assign(:am_i_the_artist, false)
+        |> assign(:block_answers, true)
 
       {:error, _error} ->
         socket

@@ -1,4 +1,5 @@
 defmodule LiveArt.Room.RoomProcess do
+  alias LiveArt.Room.RoomChat
   alias LiveArt.Room.RunningRoom
   alias LiveArt.Room.RoomRegistry
   alias LiveArt.Game.Room
@@ -38,6 +39,10 @@ defmodule LiveArt.Room.RoomProcess do
     GenServer.call(room_pid, {:validate_name, name})
   end
 
+  def add_score(room_pid, name, score) when is_pid(room_pid) do
+    GenServer.call(room_pid, {:add_score, name, score})
+  end
+
   @impl true
   def init(%Room{} = base_state) do
     state = %RunningRoom{
@@ -56,7 +61,6 @@ defmodule LiveArt.Room.RoomProcess do
 
   @impl true
   def handle_call({:validate_name, player_name}, _from, %RunningRoom{} = state) do
-
     has_player = Enum.count(state.players, fn e -> e.name == player_name end) > 0
 
     {:reply, !has_player, state}
@@ -70,7 +74,10 @@ defmodule LiveArt.Room.RoomProcess do
 
     broadcast(state.room.room_id, :state_updated, state)
 
-    Logger.info("Adding player #{player_name} to #{state.room.room_id}")
+    RoomChat.send_chat(state.room.room_id, :answer, %{
+      from: "SYSTEM",
+      content: "#{player_name} entrou na sala"
+    })
 
     {:reply, state, state}
   end
@@ -83,7 +90,10 @@ defmodule LiveArt.Room.RoomProcess do
 
     broadcast(state.room.room_id, :state_updated, state)
 
-    Logger.info("Removing player #{player_name} to #{state.room.room_id}")
+    RoomChat.send_chat(state.room.room_id, :answer, %{
+      from: "SYSTEM",
+      content: "#{player_name} saiu da sala"
+    })
 
     {:reply, state, state}
   end
@@ -115,12 +125,20 @@ defmodule LiveArt.Room.RoomProcess do
     {:reply, state, state}
   end
 
+  @impl true
+  def handle_call({:add_score, name, score}, _from, %RunningRoom{} = state) do
+    state = RunningRoom.add_score(state, name, score)
+
+    broadcast(state.room.room_id, :state_updated, state)
+
+    {:reply, state, state}
+  end
 
   @impl true
   def handle_info(:check_start_game, %RunningRoom{} = state) do
     Logger.info("Game isnt started, waiting for 2 players")
 
-    if (length(state.players) >= 2) do
+    if length(state.players) >= 2 do
       Process.send(self(), :pause_game, [])
     else
       Process.send_after(self(), :check_start_game, 2000)
@@ -131,10 +149,9 @@ defmodule LiveArt.Room.RoomProcess do
 
   @impl true
   def handle_info(:pause_game, %RunningRoom{} = state) do
-
     Logger.info("Game is paused, waiting for 2 players")
 
-    if (length(state.players) >= 2) do
+    if length(state.players) >= 2 do
       Process.send_after(self(), :start_game, 5000)
     else
       Process.send_after(self(), :pause_game, 2000)
@@ -147,9 +164,16 @@ defmodule LiveArt.Room.RoomProcess do
   def handle_info(:start_game, %RunningRoom{} = state) do
     state = RunningRoom.start_game(state, LiveArt.Words.get_random_word())
 
-    broadcast(state.room.room_id, :state_updated, state)
+    broadcast(state.room.room_id, :round_started, state)
 
-    Logger.info("Starting game, artist: #{inspect state.current_player_drawing} word #{state.current_word}. Id: #{state.room.room_id}")
+    RoomChat.send_chat(state.room.room_id, :answer, %{
+      from: "SYSTEM",
+      content: "#{state.current_player_drawing} é o(a) artista da rodada"
+    })
+
+    Logger.info(
+      "Starting game, artist: #{state.current_player_drawing} word #{state.current_word}. Id: #{state.room.room_id}"
+    )
 
     Process.send_after(self(), :end_round, 30000)
 
@@ -158,13 +182,16 @@ defmodule LiveArt.Room.RoomProcess do
 
   @impl true
   def handle_info(:end_round, %RunningRoom{} = state) do
+    RoomChat.send_chat(state.room.room_id, :answer, %{
+      from: "SYSTEM",
+      content: "Acabou rodada. A palavra era: #{state.current_word}"
+    })
+
     state = RunningRoom.end_round(state)
 
-    broadcast(state.room.room_id, :state_updated, state)
+    broadcast(state.room.room_id, :round_ended, state)
 
-    Logger.info("Endend round. Id: #{state.room.room_id}")
-
-    if (RunningRoom.has_winner(state)) do
+    if RunningRoom.has_winner(state) do
       Process.send_after(self(), :end_game, 5000)
     else
       Process.send_after(self(), :start_game, 5000)
@@ -175,6 +202,27 @@ defmodule LiveArt.Room.RoomProcess do
 
   @impl true
   def handle_info(:end_game, %RunningRoom{} = state) do
+    winners = Enum.sort(state.players, &(&1.score > &2.score))
+
+    RoomChat.send_chat(state.room.room_id, :answer, %{from: "SYSTEM", content: "Acabou o jogo:"})
+
+    RoomChat.send_chat(state.room.room_id, :answer, %{
+      from: "SYSTEM",
+      content: "1°: #{Enum.at(winners, 0).name} (#{Enum.at(winners, 0).score})"
+    })
+
+    RoomChat.send_chat(state.room.room_id, :answer, %{
+      from: "SYSTEM",
+      content: "2°: #{Enum.at(winners, 1).name} (#{Enum.at(winners, 1).score})"
+    })
+
+    if length(winners) > 2 do
+      RoomChat.send_chat(state.room.room_id, :answer, %{
+        from: "SYSTEM",
+        content: "3°: #{Enum.at(winners, 2).name} (#{Enum.at(winners, 2).score})"
+      })
+    end
+
     state = RunningRoom.end_game(state)
 
     broadcast(state.room.room_id, :state_updated, state)

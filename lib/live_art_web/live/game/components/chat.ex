@@ -6,11 +6,13 @@ defmodule LiveArtWeb.Game.Chat do
     ~H"""
     <div class="game-chat__container">
       <div class="text">
-        <p :for={ message <- @stream} class={[message.from == "SYSTEM" && "system-message"]}><%= "#{message.from}: #{message.content}"%></p>
+        <p :for={ message <- @stream} class={[message.from == "SYSTEM" && "system-message"]}>
+          <%= if (message.from == "SYSTEM"), do: "#{message.content}", else: "#{message.from}: #{message.content}"%>
+        </p>
       </div>
       <form class="input" phx-submit="submit" phx-target={@myself} id={@id} phx-change="change">
-        <input type="text" name="value" value={@value} phx-debounce="300" />
-        <button><.icon name="hero-paper-airplane-solid" /></button>
+        <input type="text" name="value" value={@value} phx-debounce="300" disabled={@disabled}/>
+        <button disabled={@disabled}><.icon name="hero-paper-airplane-solid" /></button>
       </form>
     </div>
     """
@@ -21,7 +23,8 @@ defmodule LiveArtWeb.Game.Chat do
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:value, "")}
+     |> assign(:value, "")
+    }
   end
 
   @impl true
