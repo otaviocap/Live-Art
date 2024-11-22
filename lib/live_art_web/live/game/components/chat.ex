@@ -6,7 +6,7 @@ defmodule LiveArtWeb.Game.Chat do
     ~H"""
     <div class="game-chat__container">
       <div class="text">
-        <p :for={message <- @stream} class={[message.from == "SYSTEM" && "system-message"]}>
+        <p :for={message <- @stream} class={[message.from == "SYSTEM" && "system-message", "message"]}>
           <%= if message.from == "SYSTEM",
             do: "#{message.content}",
             else: "#{message.from}: #{message.content}" %>
@@ -31,6 +31,11 @@ defmodule LiveArtWeb.Game.Chat do
   @impl true
   def handle_event("change", %{"value" => value}, socket) do
     {:noreply, assign(socket, :value, value)}
+  end
+
+  @impl true
+  def handle_event("change", _params, socket) do
+    {:noreply, assign(socket, :value, nil)}
   end
 
   @impl true
