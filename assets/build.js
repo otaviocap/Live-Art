@@ -19,7 +19,7 @@ let opts = {
 	logLevel: "info",
 	target: "es2017",
 	outdir: "../priv/static/assets",
-	external: ["*.css", "fonts/*", "images/*"],
+	external: ["css/*", "fonts/*", "images/*"],
 	nodePaths: ["../deps"],
 	loader: loader,
 	plugins: plugins,

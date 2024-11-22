@@ -13,8 +13,7 @@ defmodule LiveArtWeb.Game.Player do
         <img src={"https://robohash.org/set_set4/bgset_bg2/#{@name}?size=100x100"} class="avatar" />
         <p class="name"><%= @name %></p>
       </div>
-      <%!--<p class="score"><%= trunc(@score) %></p>--%>
-      <p class="score"><%= 105 %></p>
+      <p class="score"><%= trunc(@score) %></p>
     </div>
     """
   end
