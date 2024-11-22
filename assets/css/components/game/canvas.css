@@ -22,6 +22,10 @@
 		visibility: hidden;
 	}
 
+	> .word.hidden::after {
+		content: " a ";
+	}
+
 	> .main {
 		display: flex;
 		flex-direction: row;

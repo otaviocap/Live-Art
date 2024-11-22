@@ -42,8 +42,6 @@ defmodule LiveArtWeb.Game.Index do
 
     stream = if category == :answer, do: :answer_stream, else: :chat_stream
 
-    IO.inspect("Updating stream with new chat")
-
     {:noreply, assign(socket, stream, [message | socket.assigns[stream]])}
   end
 
@@ -84,7 +82,6 @@ defmodule LiveArtWeb.Game.Index do
         %{from: socket.assigns.user, content: value}
         )
 
-      IO.inspect("Should be unblocking")
         {:noreply, socket}
     end
 
@@ -196,13 +193,16 @@ defmodule LiveArtWeb.Game.Index do
   defp assign_room_state(socket, room) do
     case LiveArt.Room.RoomRegistry.lookup_room(room.room_id) do
       {:ok, room_pid} ->
+        state = RoomProcess.get_state(room_pid)
+
         socket
         |> assign(:room_pid, room_pid)
         |> assign(:chat_stream, [])
         |> assign(:answer_stream, [])
-        |> assign(:room_state, RoomProcess.get_state(room_pid))
+        |> assign(:room_state, state)
         |> assign(:am_i_the_artist, false)
         |> assign(:block_answers, true)
+        |> push_event("update-drawing", %{drawing: state.current_drawing})
 
       {:error, _error} ->
         socket

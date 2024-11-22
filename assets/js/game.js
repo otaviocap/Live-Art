@@ -141,3 +141,15 @@ window.addEventListener("phx:add_stroke", (e) => {
 });
 
 
+window.addEventListener("phx:update-drawing", (e) => {
+	canvas = getCanvas();
+
+	for (let stroke of e.detail.drawing) {
+		let el = createPathElement(stroke.color)
+		updatePoints(el, stroke.data)
+	
+		canvas.appendChild(el)
+	}
+});
+
+

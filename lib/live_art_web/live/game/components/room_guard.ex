@@ -50,7 +50,10 @@ defmodule LiveArtWeb.Game.RoomGuard do
   end
 
   def handle_event("save", %{"name" => name, "password" => password}, socket) do
-    case validate_name(socket, name) and validate_password(socket, password) do
+    case validate_name(socket, name)
+      and validate_password(socket, password)
+      and validate_max_players(socket)
+    do
       true ->
         notify_parent({:login_successful, name})
 
@@ -62,8 +65,12 @@ defmodule LiveArtWeb.Game.RoomGuard do
       false ->
         {:noreply,
          socket
-         |> assign(:error, "Incorrect password or name already in use")}
+         |> assign(:error, "Incorrect password, name already in use or room is full")}
     end
+  end
+
+  defp validate_max_players(socket) do
+    socket.assigns.room.current_players < socket.assigns.room.max_players
   end
 
   defp validate_name(socket, name) do

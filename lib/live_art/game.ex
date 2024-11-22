@@ -53,6 +53,12 @@ defmodule LiveArt.Game do
     end)
   end
 
+  def clear_all_players() do
+    Repo.transaction(fn ->
+      Repo.update_all(Room, set: [current_players: 0])
+    end)
+  end
+
   def change_room(%Room{} = room, attrs \\ %{}) do
     Room.changeset(room, attrs)
   end

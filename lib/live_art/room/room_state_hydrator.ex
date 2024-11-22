@@ -14,6 +14,8 @@ defmodule LiveArt.Room.RoomStateHydrator do
   def init(_) do
     Logger.info("#{inspect(Time.utc_now())} Starting room process hydration")
 
+    LiveArt.Game.clear_all_players()
+
     LiveArt.Game.list_rooms()
     |> Enum.each(fn %Room{} = room -> RoomDynamicSupervisor.create_room(room) end)
 

@@ -1,4 +1,5 @@
 defmodule LiveArt.Room.RoomProcess do
+  alias LiveArt.Room.RoomDynamicSupervisor
   alias LiveArt.Room.RoomChat
   alias LiveArt.Room.RunningRoom
   alias LiveArt.Room.RoomRegistry
@@ -95,6 +96,10 @@ defmodule LiveArt.Room.RoomProcess do
       content: "#{player_name} saiu da sala"
     })
 
+    if length(state.players) == 0 do
+      Process.send(self(), :start_end_clock, [])
+    end
+
     {:reply, state, state}
   end
 
@@ -128,6 +133,7 @@ defmodule LiveArt.Room.RoomProcess do
   @impl true
   def handle_call({:add_score, name, score}, _from, %RunningRoom{} = state) do
     state = RunningRoom.add_score(state, name, score)
+    state = RunningRoom.add_score(state, state.current_player_drawing, score/2)
 
     broadcast(state.room.room_id, :state_updated, state)
 
@@ -135,10 +141,34 @@ defmodule LiveArt.Room.RoomProcess do
   end
 
   @impl true
-  def handle_info(:check_start_game, %RunningRoom{} = state) do
-    Logger.info("Game isnt started, waiting for 2 players")
+  def handle_info(:start_end_clock, %RunningRoom{} = state) do
+    if state.end_clock != nil do
+      Process.cancel_timer(state.end_clock)
+    end
 
+    if length(state.players) == 0 do
+      {:noreply,
+       RunningRoom.set_end_clock(state, Process.send_after(self(), :run_end_clock, 20000))}
+    else
+      {:noreply, state}
+    end
+
+  end
+
+  @impl true
+  def handle_info(:run_end_clock, %RunningRoom{} = state) do
+    if length(state.players) == 0 do
+      LiveArt.Game.delete_room(state.room)
+      RoomDynamicSupervisor.delete_room(state.room)
+    end
+
+    {:noreply, state}
+  end
+
+  @impl true
+  def handle_info(:check_start_game, %RunningRoom{} = state) do
     if length(state.players) >= 2 do
+      Logger.info("Game (#{state.room.room_id}) will start")
       Process.send(self(), :pause_game, [])
     else
       Process.send_after(self(), :check_start_game, 2000)
@@ -149,8 +179,6 @@ defmodule LiveArt.Room.RoomProcess do
 
   @impl true
   def handle_info(:pause_game, %RunningRoom{} = state) do
-    Logger.info("Game is paused, waiting for 2 players")
-
     if length(state.players) >= 2 do
       Process.send_after(self(), :start_game, 5000)
     else
@@ -194,7 +222,7 @@ defmodule LiveArt.Room.RoomProcess do
     if RunningRoom.has_winner(state) do
       Process.send_after(self(), :end_game, 5000)
     else
-      Process.send_after(self(), :start_game, 5000)
+      Process.send_after(self(), :pause_game, 5000)
     end
 
     {:noreply, state}

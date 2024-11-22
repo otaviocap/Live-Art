@@ -5,9 +5,10 @@ defmodule LiveArt.Room.RunningRoom do
 
   defstruct room: %Room{},
             players: [],
-            current_word: nil,
+            current_word: "",
             current_player_drawing: nil,
-            current_drawing: []
+            current_drawing: [],
+            end_clock: nil
 
   def add_player(state = %RunningRoom{}, player_name) do
     %{state | players: [%RoomPlayer{name: player_name} | state.players]}
@@ -75,4 +76,10 @@ defmodule LiveArt.Room.RunningRoom do
 
     %{state | players: players}
   end
+
+  def set_end_clock(state = %RunningRoom{}, timer) do
+    %{state | end_clock: timer}
+  end
+
+
 end

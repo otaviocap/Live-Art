@@ -15,7 +15,7 @@ export function getSvgPathFromStroke(stroke) {
 }
 
 export const options = {
-	size: 16,
+	size: 12,
 	thinning: 0.5,
 	smoothing: 0.5,
 	streamline: 0.5,

@@ -5,6 +5,7 @@
 	flex-direction: row;
 	align-items: center;
 	justify-content: space-around;
+	overflow: hidden;
 
 	> .info {
 		display: flex;
@@ -27,7 +28,7 @@
 
 
 	> .score {
-		width: 10%;
+		width: 12%;
 		font-size: 1.5rem;
 	}
 }
